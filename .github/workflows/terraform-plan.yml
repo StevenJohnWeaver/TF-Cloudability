@@ -55,4 +55,53 @@ jobs:
           path: tfplan.json
 
       # Step 8: Call the Cloudability Governance Action
-      # We'll add this step once the above steps are working and tested
+  cloudability-governance:
+    name: "Cloudability Governance"
+    runs-on: ubuntu-latest
+    needs: [terraform] # This ensures the 'terraform' job runs first
+    # Define permissions for this job
+    permissions:
+      contents: read
+      pull-requests: write # This is required to post comments on the PR
+    steps:
+      - name: "Download tfplan.json artifact"
+        uses: actions/download-artifact@v4
+        with:
+          name: tfplan-json
+
+      - name: Get Frontdoor token
+        uses: ibm/ibm-cloudability-governance/actions/frontdoor/login@v0.1.0
+        with:
+          fd-url: ${{ vars.FD_URL }}
+          fd-public-key: ${{ secrets.FD_KEY }}
+          fd-secret-key: ${{ secrets.FD_SECRET }}
+
+      - name: Get GitHub PR metadata
+        uses: ibm/ibm-cloudability-governance/actions/github-info@v0.1.0
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          pr-number: ${{ github.event.pull_request.number }}
+
+      - name: Run Cloudability Governance Metadata Retrieval
+        uses: ibm/ibm-cloudability-governance/actions/metadata@v0.1.0
+        with:
+          cloudability-host: ${{ vars.CLOUDABILITY_HOST }}
+          fd-env-id: ${{ secrets.FD_ENV_ID }}
+      
+      - name: Run Cloudability Cost Estimation
+        uses: ibm/ibm-cloudability-governance/actions/cost-estimation@v0.1.0
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          pr-number: ${{ github.event.pull_request.number }}
+          cloudability-host: ${{ secrets.CLOUDABILITY_HOST }}
+          fd-env-id: ${{ secrets.FD_ENV_ID }}
+          deployment-name: "demo"
+          provider-accounts: |
+            {
+              "*": {
+                "account_id": "${{ secrets.AWS_ACCOUNT_ID }}", 
+                "vendor": "aws"
+              }
+            }
+          tf-plan: "tfplan.json"
+          resource-usage: "usage.json"
