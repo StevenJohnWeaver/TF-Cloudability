@@ -25,7 +25,7 @@ resource "aws_s3_bucket" "example" {
 # Create an AWS EC2 instance
 resource "aws_instance" "web_server" {
   ami           = "ami-0de716d6197524dd9" # This is a publicly available Amazon Linux 2 AMI
-  instance_type = "t2.small"
+  instance_type = "t2.large"
   tags = {
     Name = "HelloWorldServer"
   }
