@@ -47,12 +47,18 @@ jobs:
       - name: "Create JSON plan file"
         run: terraform show -json tfplan.out > tfplan.json
 
-      # Step 7: Upload the JSON plan as an artifact for later steps
-      - name: "Upload plan artifact"
+      # Step 7: Upload the JSON and Binary plans as an artifact for later steps
+      - name: "Upload JSON plan artifact"
         uses: actions/upload-artifact@v4
         with:
           name: tfplan-json
           path: tfplan.json
+          
+      - name: "Upload Binary plan artifact"
+        uses: actions/upload-artifact@v4
+        with:
+          name: tfplan-out
+          path: tfplan.out
 
       # Step 8: Call the Cloudability Governance Action
   cloudability-governance:
