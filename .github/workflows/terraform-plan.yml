@@ -112,6 +112,24 @@ jobs:
           tf-plan: "tfplan.json"
           resource-usage: "usage.json"
 
+      - name: Run Cloudability Governance Policy Evaluation
+        uses: ibm/ibm-cloudability-governance/actions/policy-evaluation@v0.1.0
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          pr-number: ${{ github.event.pull_request.number }}
+          cloudability-host: ${{ secrets.CLOUDABILITY_HOST }}
+          fd-env-id: ${{ secrets.FD_ENV_ID }}
+          deployment-name: "demo"
+          provider-accounts: |
+            {
+              "*": {
+                "account_id": "${{ secrets.AWS_ACCOUNT_ID }}", 
+                "vendor": "aws"
+              }
+            }
+          tf-plan: "tfplan.json"
+          resource-usage: "usage.json"
+          
   terraform-apply:
     name: "Terraform Apply"
     runs-on: ubuntu-latest
