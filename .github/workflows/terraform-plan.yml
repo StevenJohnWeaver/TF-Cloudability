@@ -69,8 +69,8 @@ jobs:
         with:
           name: tfplan-json
 
-      - name: "Run Cloudability Governance"
-        uses: Cloudability/cloudability-governance-action@v1
+      - name: Run Cloudability Cost Estimation
+        uses: ibm/ibm-cloudability-governance/actions/cost-estimation@v0.1.0
         with:
           api-key: ${{ secrets.CLOUDABILITY_API_KEY }}
           terraform-plan-file: tfplan.json
