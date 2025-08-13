@@ -68,3 +68,9 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: tfplan-json
+
+      - name: "Run Cloudability Governance"
+        uses: Cloudability/cloudability-governance-action@v1
+        with:
+          api-key: ${{ secrets.CLOUDABILITY_API_KEY }}
+          terraform-plan-file: tfplan.json
