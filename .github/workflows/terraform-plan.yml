@@ -105,3 +105,36 @@ jobs:
             }
           tf-plan: "tfplan.json"
           resource-usage: "usage.json"
+
+  terraform-apply:
+    name: "Terraform Apply"
+    runs-on: ubuntu-latest
+    needs: [terraform, cloudability-governance]
+    environment: production # Best practice to require manual approval for production
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v3
+        
+      - name: "Setup Terraform"
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_wrapper: false
+          
+      - name: "Configure AWS Credentials"
+        uses: aws-actions/configure-aws-credentials@v3
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: "Download tfplan artifact"
+        uses: actions/download-artifact@v4
+        with:
+          name: tfplan-out # Name of the binary plan artifact from the first job
+          path: .
+          
+      - name: "Terraform Apply"
+        run: terraform apply -auto-approve tfplan.out
