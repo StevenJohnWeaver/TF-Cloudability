@@ -14,9 +14,9 @@ provider "aws" {
 
 # Create an AWS S3 bucket
 resource "aws_s3_bucket" "example" {
-  bucket = "my-unique-terraform-bucket-12345"
+  bucket = "sjw-bucket-081325"
   tags = {
-    Name        = "My unique bucket"
+    Name        = "Demo bucket"
     Environment = "Dev"
     Project     = "NewFeature"
   }
@@ -24,8 +24,8 @@ resource "aws_s3_bucket" "example" {
 
 # Create an AWS EC2 instance
 resource "aws_instance" "web_server" {
-  ami           = "ami-06e11c4cc68c362dd" # This is a publicly available Amazon Linux 2 AMI
-  instance_type = "t2.large"
+  ami           = "ami-0de716d6197524dd9" # This is a publicly available Amazon Linux 2 AMI
+  instance_type = "t2.small"
   tags = {
     Name = "HelloWorldServer"
   }
